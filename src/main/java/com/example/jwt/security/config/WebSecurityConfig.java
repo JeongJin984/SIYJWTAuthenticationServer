@@ -8,6 +8,7 @@ import com.example.jwt.security.handler.CustomLoginSuccessHandler;
 import com.example.jwt.security.provider.AjaxAuthenticationProvider;
 import com.example.jwt.security.service.CustomTokenExtractor;
 import com.example.jwt.security.service.UserDetailsServiceImpl;
+import com.example.jwt.security.util.jwt.accesToken.TokenConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -73,7 +74,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .addLogoutHandler(new LogoutHandler() {
                     @Override
                     public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-                        String username = getUserName(tokenExtractor.getTokenFromRequest(request));
+                        String username = getUserName(tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER));
                         LogOutUser user = logOutUserRepository.findByUsername(username);
                         if(user != null && !user.getIsLogOut()) {
                             logOutUserRepository.delete(user);
@@ -94,7 +95,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("http://localhost:3000");
+        configuration.addAllowedOrigin("*");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);

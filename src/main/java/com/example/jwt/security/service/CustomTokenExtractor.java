@@ -11,15 +11,13 @@ import java.util.Arrays;
 @Service
 public class CustomTokenExtractor{
 
-    private static final String TOKEN_KEY_JWT = "Authorization";
-
-    public String getTokenFromRequest(HttpServletRequest request) {
+    public String getTokenFromRequest(HttpServletRequest request, String token_key_jwt) {
         final Cookie[] cookies = request.getCookies();
         if (cookies == null) {
             return null;
         }
         return Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals(TOKEN_KEY_JWT))
+                .filter(cookie -> cookie.getName().equals(token_key_jwt))
                 .findFirst()
                 .map(Cookie::getValue).orElse(null);
     }

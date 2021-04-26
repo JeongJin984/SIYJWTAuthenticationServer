@@ -2,13 +2,12 @@ package com.example.jwt.security.handler;
 
 import com.example.jwt.dto.AccountContext;
 import com.example.jwt.repository.LogOutUserRepository.LogOutUserRepository;
-import com.example.jwt.security.util.jwt.ResponseToken;
-import com.example.jwt.security.util.jwt.TokenConstant;
+import com.example.jwt.security.util.jwt.RefreshToken.RefreshTokenConstant;
+import com.example.jwt.security.util.jwt.accesToken.ResponseToken;
+import com.example.jwt.security.util.jwt.accesToken.TokenConstant;
 import com.example.jwt.security.util.jwt.TokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 
@@ -17,19 +16,24 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
     @Autowired
     LogOutUserRepository logOutUserRepository;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         final AccountContext user = new AccountContext((String)authentication.getPrincipal(), null, authentication.getAuthorities());
-        final String token = TokenUtils.generateJwtToken(user);
+        final String accessToken = TokenUtils.generateJwtToken(user, 1);
 
-        Cookie cookie = new Cookie(TokenConstant.AUTH_HEADER, TokenConstant.TOKEN_TYPE + token);
+        final AccountContext nullUser = new AccountContext("", null, authentication.getAuthorities());
+        final String refreshToken = TokenUtils.generateJwtToken(nullUser, 2);
+
+        Cookie cookie = new Cookie(TokenConstant.AUTH_HEADER, TokenConstant.TOKEN_TYPE + accessToken);
+        Cookie cookie2 = new Cookie(RefreshTokenConstant.AUTH_HEADER, RefreshTokenConstant.TOKEN_TYPE + refreshToken);
 
         // expires in 7 days
         cookie.setMaxAge(7 * 24 * 60 * 60);
@@ -39,6 +43,21 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         cookie.setHttpOnly(true);
         cookie.setPath("/");
 
+        // expires in 7 days
+        cookie2.setMaxAge(7 * 24 * 60 * 60);
+
+        // optional properties
+        cookie2.setSecure(true);
+        cookie2.setHttpOnly(true);
+        cookie2.setPath("/");
+
         response.addCookie(cookie);
+        response.addCookie(cookie2);
+
+        ResponseToken token = new ResponseToken(TokenConstant.TOKEN_TYPE + accessToken,
+                RefreshTokenConstant.TOKEN_TYPE + refreshToken);
+
+        response.getWriter().write(TokenConstant.TOKEN_TYPE + ":BEARER" + accessToken + ","
+                + RefreshTokenConstant.TOKEN_TYPE + ":BEARER" + refreshToken);
     }
 }

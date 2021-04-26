@@ -14,12 +14,12 @@ import java.util.Date;
 @NoArgsConstructor
 public class TokenUtils extends CreateTokenInfo {
 
-    public static String generateJwtToken(AccountContext context) {
+    public static String generateJwtToken(AccountContext context, int minute) {
         JwtBuilder builder = Jwts.builder()
                 .setSubject(context.getUsername())
                 .setHeader(createHeader())
                 .setClaims(createClaims(context))
-                .setExpiration(createExpireDateForOneYear(5))
+                .setExpiration(createExpireDateForOneYear(minute))
                 .signWith(SignatureAlgorithm.HS256, Base64.getEncoder().encodeToString(secretKey.getBytes()));
 
         return builder.compact();

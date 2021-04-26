@@ -1,4 +1,4 @@
-package com.example.jwt.security.util.jwt;
+package com.example.jwt.security.util.jwt.accesToken;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

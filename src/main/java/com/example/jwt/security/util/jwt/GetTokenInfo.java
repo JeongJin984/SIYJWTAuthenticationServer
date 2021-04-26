@@ -69,7 +69,7 @@ public class GetTokenInfo {
         String result = decode(token);
         String[] split = result.replaceAll("[^a-z|0-9|,|:]", "").split("[,|:]");
 
-        for (int i = 0; i < split.length; i+=2) {
+        for (int i = 0; i < split.length; i++) {
             if(split[i].equals("name")) {
                 username = split[i+1];
             };

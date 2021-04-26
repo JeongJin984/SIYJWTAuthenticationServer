@@ -55,6 +55,13 @@ public class Account implements UserDetails {
         this.age = age;
     }
 
+    public Account(String username, String password, String email) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.age = 0;
+    }
+
     public void setAge(int age) {
         this.age = age;
     }
