@@ -26,5 +26,10 @@ public class AccountRole {
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    public AccountRole(Account account, Role role) {
+        this.account = account;
+        this.role = role;
+    }
 }
 

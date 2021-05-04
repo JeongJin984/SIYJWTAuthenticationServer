@@ -24,6 +24,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
@@ -71,18 +72,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .logout()
                 .logoutUrl("/api/logout")
-                .addLogoutHandler(new LogoutHandler() {
-                    @Override
-                    public void logout(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-                        String username = getUserName(tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER));
-                        LogOutUser user = logOutUserRepository.findByUsername(username);
-                        if(user != null && !user.getIsLogOut()) {
-                            logOutUserRepository.delete(user);
-                        }
-                        Cookie cookie = new Cookie("Authorization", null);
-                        response.addCookie(cookie);
-                    }
-                })
+                .addLogoutHandler(new CookieClearingLogoutHandler("Authorization", "Refresh"))
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
                     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {

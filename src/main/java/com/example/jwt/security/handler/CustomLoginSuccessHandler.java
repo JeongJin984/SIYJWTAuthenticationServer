@@ -27,10 +27,10 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         final AccountContext user = new AccountContext((String)authentication.getPrincipal(), null, authentication.getAuthorities());
-        final String accessToken = TokenUtils.generateJwtToken(user, 1);
+        final String accessToken = TokenUtils.generateJwtToken(user, 30);
 
         final AccountContext nullUser = new AccountContext("", null, authentication.getAuthorities());
-        final String refreshToken = TokenUtils.generateJwtToken(nullUser, 2);
+        final String refreshToken = TokenUtils.generateJwtToken(nullUser, 60 * 24 * 7);
 
         Cookie cookie = new Cookie(TokenConstant.AUTH_HEADER, TokenConstant.TOKEN_TYPE + accessToken);
         Cookie cookie2 = new Cookie(RefreshTokenConstant.AUTH_HEADER, RefreshTokenConstant.TOKEN_TYPE + refreshToken);
@@ -57,7 +57,6 @@ public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSu
         ResponseToken token = new ResponseToken(TokenConstant.TOKEN_TYPE + accessToken,
                 RefreshTokenConstant.TOKEN_TYPE + refreshToken);
 
-        response.getWriter().write(TokenConstant.TOKEN_TYPE + ":BEARER" + accessToken + ","
-                + RefreshTokenConstant.TOKEN_TYPE + ":BEARER" + refreshToken);
+        response.getWriter().write(objectMapper.writeValueAsString(user));
     }
 }
