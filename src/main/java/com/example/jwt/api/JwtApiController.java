@@ -27,13 +27,14 @@ import static com.example.jwt.security.util.jwt.GetTokenInfo.getUserName;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/user-service")
 public class JwtApiController {
 
     private final CustomTokenExtractor tokenExtractor;
     private final AccountRegisterService accountRegisterService;
     private final AccountRepository accountRepository;
 
-    @GetMapping(value = "/api/refresh")
+    @GetMapping(value = "/refresh")
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
 
         String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
@@ -49,7 +50,7 @@ public class JwtApiController {
         }
     }
 
-    @GetMapping(value = "/api/user")
+    @GetMapping(value = "/user")
     public ResponseEntity<Account> loadUser(HttpServletRequest request, HttpServletResponse response) {
 
         try {
@@ -70,7 +71,7 @@ public class JwtApiController {
     }
 
 
-    @PostMapping(value = "/api/signup")
+    @PostMapping(value = "/signup")
     String signup(@RequestBody Account account) {
         try {
             accountRegisterService.registerNewAccount(account);

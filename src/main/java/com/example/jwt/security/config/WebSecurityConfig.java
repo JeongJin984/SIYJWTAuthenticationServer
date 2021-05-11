@@ -71,7 +71,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .logout()
-                .logoutUrl("/api/logout")
+                .logoutUrl("/user-service/logout")
                 .addLogoutHandler(new CookieClearingLogoutHandler("Authorization", "Refresh"))
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override

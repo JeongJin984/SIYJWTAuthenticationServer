@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: siy-user-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/springdata
+    username: njj
+    password: pass
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+logging:
+  level:
+    org.hibernate.type.descriptor.sql: trace
+
+server:
+  port: 8083
