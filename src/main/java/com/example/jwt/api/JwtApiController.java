@@ -23,16 +23,16 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.jwt.security.util.jwt.GetTokenInfo.getUserName;
-
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user-service")
+@RequestMapping("/")
 public class JwtApiController {
 
     private final CustomTokenExtractor tokenExtractor;
     private final AccountRegisterService accountRegisterService;
     private final AccountRepository accountRepository;
+    private final TokenUtils tokenUtils;
+    private final GetTokenInfo getTokenInfo;
 
     @GetMapping(value = "/refresh")
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -40,9 +40,9 @@ public class JwtApiController {
         String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
         String refreshToken = tokenExtractor.getTokenFromRequest(request, RefreshTokenConstant.AUTH_HEADER).substring(6);
 
-        if(GetTokenInfo.isValidToken(refreshToken)) {
-            String username = getUserName(accessToken);
-            final String new_token = TokenUtils.generateJwtToken(new AccountContext(username, null, null), 30);
+        if(getTokenInfo.isValidToken(refreshToken)) {
+            String username = getTokenInfo.getUserName(accessToken);
+            final String new_token = tokenUtils.generateJwtToken(new AccountContext(username, null, null), 30);
 
             return new ResponseEntity<>(new_token, HttpStatus.OK);
         } else {
@@ -57,8 +57,8 @@ public class JwtApiController {
             String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
             String refreshToken = tokenExtractor.getTokenFromRequest(request, RefreshTokenConstant.AUTH_HEADER).substring(6);
 
-            if(GetTokenInfo.isValidToken(refreshToken)) {
-                String username = getUserName(accessToken);
+            if(getTokenInfo.isValidToken(refreshToken)) {
+                String username = getTokenInfo.getUserName(accessToken);
                 Account account = accountRepository.findAccountByUsername(username);
 
                 return new ResponseEntity<>(account, HttpStatus.OK);

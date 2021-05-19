@@ -38,8 +38,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
-import static com.example.jwt.security.util.jwt.GetTokenInfo.getUserName;
-
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
@@ -47,6 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
     private final LogOutUserRepository logOutUserRepository;
+    private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
     private CustomTokenExtractor tokenExtractor = new CustomTokenExtractor();
 
@@ -71,7 +70,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .logout()
-                .logoutUrl("/user-service/logout")
+                .logoutUrl("/logout")
                 .addLogoutHandler(new CookieClearingLogoutHandler("Authorization", "Refresh"))
                 .logoutSuccessHandler(new LogoutSuccessHandler() {
                     @Override
@@ -85,7 +84,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.addAllowedOrigin("*");
+        configuration.addAllowedOrigin("http://localhost:8000");
+        configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
@@ -93,11 +93,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
-    }
-
-    @Bean
-    public CustomLoginSuccessHandler customLoginSuccessHandler() {
-        return new CustomLoginSuccessHandler();
     }
 
     @Bean
@@ -114,7 +109,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     public AjaxLoginProcessingFilter ajaxAuthenticationFilter() throws Exception {
         AjaxLoginProcessingFilter ajaxAuthenticationFilter = new AjaxLoginProcessingFilter();
         ajaxAuthenticationFilter.setAuthenticationManager(authenticationManagerBean());
-        ajaxAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler());
+        ajaxAuthenticationFilter.setAuthenticationSuccessHandler(customLoginSuccessHandler);
         ajaxAuthenticationFilter.setAuthenticationFailureHandler(customLoginFailureHandler());
         ajaxAuthenticationFilter.afterPropertiesSet();
         return ajaxAuthenticationFilter;

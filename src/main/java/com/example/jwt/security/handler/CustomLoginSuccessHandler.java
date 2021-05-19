@@ -7,9 +7,12 @@ import com.example.jwt.security.util.jwt.accesToken.ResponseToken;
 import com.example.jwt.security.util.jwt.accesToken.TokenConstant;
 import com.example.jwt.security.util.jwt.TokenUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.stereotype.Service;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -17,23 +20,31 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@NoArgsConstructor
+@Service
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
+    private LogOutUserRepository logOutUserRepository;
+    private TokenUtils tokenUtils;
+
     @Autowired
-    LogOutUserRepository logOutUserRepository;
+    public CustomLoginSuccessHandler(LogOutUserRepository logOutUserRepository, TokenUtils tokenUtils) {
+        this.logOutUserRepository = logOutUserRepository;
+        this.tokenUtils = tokenUtils;
+    }
 
     ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws ServletException, IOException {
         final AccountContext user = new AccountContext((String)authentication.getPrincipal(), null, authentication.getAuthorities());
-        final String accessToken = TokenUtils.generateJwtToken(user, 30);
+        final String accessToken = tokenUtils.generateJwtToken(user, 60 * 24 * 7);
 
         final AccountContext nullUser = new AccountContext("", null, authentication.getAuthorities());
-        final String refreshToken = TokenUtils.generateJwtToken(nullUser, 60 * 24 * 7);
+        final String refreshToken = tokenUtils.generateJwtToken(nullUser, 60 * 24 * 7);
 
-        Cookie cookie = new Cookie(TokenConstant.AUTH_HEADER, TokenConstant.TOKEN_TYPE + accessToken);
-        Cookie cookie2 = new Cookie(RefreshTokenConstant.AUTH_HEADER, RefreshTokenConstant.TOKEN_TYPE + refreshToken);
+        Cookie cookie = new Cookie(TokenConstant.AUTH_HEADER, accessToken);
+        Cookie cookie2 = new Cookie(RefreshTokenConstant.AUTH_HEADER, refreshToken);
 
         // expires in 7 days
         cookie.setMaxAge(7 * 24 * 60 * 60);

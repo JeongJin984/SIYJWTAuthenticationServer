@@ -2,48 +2,49 @@ package com.example.jwt.security.util.jwt;
 
 import com.example.jwt.entity.account.Role;
 import io.jsonwebtoken.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.jwt.codec.Codecs;
+import org.springframework.stereotype.Component;
 
-import javax.xml.bind.DatatypeConverter;
 import java.nio.CharBuffer;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+@Slf4j
+@Component
 public class GetTokenInfo {
 
-    private final static String secretKey = CreateTokenInfo.secretKey;
+    @Value("${token.secret}")
+    private String secretKey;
 
-    private static Claims getClaimsFormToken(String token) {
-        return Jwts.parser().setSigningKey(Base64.getEncoder().encodeToString(secretKey.getBytes()))
+    private Claims getClaimsFormToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey)
                 .parseClaimsJws(token).getBody();
     }
 
-    public static String getUsernameFromValidToken(String token) {
+    public String getUsernameFromValidToken(String token) {
         Claims claims = getClaimsFormToken(token);
         return (String) claims.get("username");
     }
 
-    private static Role getRoleFromValidToken(String token) {
+    private Role getRoleFromValidToken(String token) {
         Claims claims = getClaimsFormToken(token);
         return (Role) claims.get("role");
     }
 
-    public static boolean isValidToken(String token) {
+    public boolean isValidToken(String token) {
+        String subject = null;
         try {
-            Claims claims = getClaimsFormToken(token);
-            return true;
-
-        } catch (ExpiredJwtException exception) {
-            return false;
-        } catch (JwtException exception) {
-            return false;
-        } catch (NullPointerException exception) {
+            subject = Jwts.parser().setSigningKey(secretKey)
+                    .parseClaimsJws(token).getBody()
+                    .getSubject();
+        } catch (JwtException | NullPointerException exception) {
             return false;
         }
+        return true;
     }
 
-    private static String decode(String token) {
+    private String decode(String token) {
         int firstPeriod = token.indexOf(46);
         int lastPeriod = token.lastIndexOf(46);
         byte[] claims = null;
@@ -63,7 +64,7 @@ public class GetTokenInfo {
         return Codecs.utf8Decode(claims);
     }
 
-    public static String getUserName(String token) {
+    public String getUserName(String token) {
         String username = null;
 
         String result = decode(token);

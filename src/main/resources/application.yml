@@ -2,22 +2,27 @@ spring:
   application:
     name: siy-user-service
 
-  datasource:
-    url: jdbc:postgresql://localhost:5432/springdata
-    username: njj
-    password: pass
-
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
-    properties:
-      hibernate:
-        format_sql: true
-        show_sql: true
-        jdbc:
-          lob:
-            non_contextual_creation: true
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/springdata
+#    username: njj
+#    password: pass
+#
+#  jpa:
+#    hibernate:
+#      ddl-auto: create
+#    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
+#    properties:
+#      hibernate:
+#        format_sql: true
+#        show_sql: true
+#        jdbc:
+#          lob:
+#            non_contextual_creation: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 eureka:
   client:
@@ -32,3 +37,9 @@ logging:
 
 server:
   port: 8083
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans, httptrace,busrefresh

@@ -13,9 +13,10 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 
 @NoArgsConstructor
-@Component
+//@Component
 public class SimpleListener implements ApplicationListener<ApplicationStartedEvent> {
 
     private EntityManagerFactory entityManagerFactory;
@@ -30,7 +31,8 @@ public class SimpleListener implements ApplicationListener<ApplicationStartedEve
     @Override
     public void onApplicationEvent(ApplicationStartedEvent applicationStartedEvent) {
         EntityManager em = entityManagerFactory.createEntityManager();
-        em.getTransaction().begin();
+        EntityTransaction transaction = em.getTransaction();
+        transaction.begin();
 
         Role roleAdmin = new Role("ROLE_ADMIN");
         Role roleManager = new Role("ROLE_MANAGER");
@@ -83,6 +85,6 @@ public class SimpleListener implements ApplicationListener<ApplicationStartedEve
         em.persist(accountRoleManager);
         em.persist(accountRoleUser);
 
-        em.getTransaction().commit();
+        transaction.commit();
     }
 }

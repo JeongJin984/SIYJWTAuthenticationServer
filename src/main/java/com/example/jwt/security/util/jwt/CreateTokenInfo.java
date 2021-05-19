@@ -14,9 +14,10 @@ import java.util.Map;
 
 public class CreateTokenInfo {
 
-    static final String secretKey = "ThisIsA_SecretKeyForJwtExample";
+    @Value("${token.secret}")
+    private static String secretKey;
 
-    protected static Map<String, Object> createHeader() {
+    protected Map<String, Object> createHeader() {
         Map<String, Object> header = new HashMap<>();
 
         header.put("typ", "JWT");
@@ -26,7 +27,7 @@ public class CreateTokenInfo {
         return header;
     }
 
-    protected static Map<String, Object> createClaims(AccountContext context) {
+    protected Map<String, Object> createClaims(AccountContext context) {
         // 공개 클레임에 사용자의 이름과 이메일을 설정하여 정보를 조회할 수 있다.
         Map<String, Object> claims = new HashMap<>();
 
@@ -36,17 +37,12 @@ public class CreateTokenInfo {
         return claims;
     }
 
-    protected static Date createExpireDateForOneYear(Integer minute) {
+    protected Date createExpireDate(Integer minute) {
         // 토큰 만료시간은 30일으로 설정
         Date date = new Date();
         long t = date.getTime();
         long expirationTime = (long)minute * 60L * 1000L;
         Date expirationDate = new Date(t + expirationTime); // set 5 seconds
         return expirationDate;
-    }
-
-    protected static Key createSigningKey() {
-        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary(secretKey);
-        return new SecretKeySpec(apiKeySecretBytes, SignatureAlgorithm.HS256.getJcaName());
     }
 }
