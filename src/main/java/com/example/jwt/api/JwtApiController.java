@@ -4,6 +4,7 @@ import com.example.jwt.dto.AccountContext;
 import com.example.jwt.entity.account.Account;
 import com.example.jwt.entity.account.AccountRole;
 import com.example.jwt.entity.account.Role;
+import com.example.jwt.kafka.producer.AccountProducer;
 import com.example.jwt.repository.AccountRepository.AccountRepository;
 import com.example.jwt.security.service.CustomTokenExtractor;
 import com.example.jwt.security.util.jwt.GetTokenInfo;
@@ -33,6 +34,7 @@ public class JwtApiController {
     private final AccountRepository accountRepository;
     private final TokenUtils tokenUtils;
     private final GetTokenInfo getTokenInfo;
+    private final AccountProducer accountProducer;
 
     @GetMapping(value = "/refresh")
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -74,7 +76,8 @@ public class JwtApiController {
     @PostMapping(value = "/signup")
     String signup(@RequestBody Account account) {
         try {
-            accountRegisterService.registerNewAccount(account);
+            //accountRegisterService.registerNewAccount(account);
+            accountProducer.send("account", account);
         } catch (Exception e) {
             if(e instanceof UsernameNotFoundException) {
                 return e.getMessage();

@@ -6,8 +6,10 @@ import com.example.jwt.entity.account.Role;
 import com.example.jwt.repository.AccountRepository.AccountRepository;
 import com.example.jwt.repository.AccountRoleRepository.AccountRoleRepository;
 import com.example.jwt.repository.RoleRepository.RoleRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class AccountRegisterService {
     private final AccountRepository accountRepository;
     private final RoleRepository roleRepository;
     private final AccountRoleRepository accountRoleRepository;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Transactional
     public Account registerNewAccount(Account account) throws Exception {
@@ -43,7 +48,15 @@ public class AccountRegisterService {
         Account registeredAccount = accountRepository.save(user);
         accountRoleList.add(new AccountRole(registeredAccount, role));
         registeredAccount.setAccountRoles(accountRoleList);
+
+        kafkaTemplate.send("account_role", objectMapper.writeValueAsString(accountRoleList));
+        kafkaTemplate.send("account", objectMapper.writeValueAsString(user));
+
         return registeredAccount;
+    }
+
+    public boolean isValidAccount(Account account) {
+        return true;
     }
 
 }

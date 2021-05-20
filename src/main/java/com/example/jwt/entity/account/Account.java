@@ -21,7 +21,7 @@ import java.util.List;
 @Getter
 public class Account implements UserDetails {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_id")
     private Long id;
 

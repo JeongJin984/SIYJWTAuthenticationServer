@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Getter
 public class AccessIp {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ip_id", unique = true, nullable = false)
     private Long id;
 

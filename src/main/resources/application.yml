@@ -36,10 +36,12 @@ logging:
     org.hibernate.type.descriptor.sql: trace
 
 server:
-  port: 8083
+  port: 8093
 
 management:
   endpoints:
     web:
       exposure:
         include: refresh, health, beans, httptrace,busrefresh
+
+

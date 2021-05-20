@@ -19,7 +19,7 @@ import javax.persistence.*;
 public class AccountPost {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "account_post_id")
     private Long id;
 
