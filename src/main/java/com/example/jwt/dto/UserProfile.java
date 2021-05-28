@@ -1,11 +1,9 @@
 package com.example.jwt.dto;
 
-import com.example.jwt.entity.post.Post;
+import com.example.jwt.dto.post.RelatedPost;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +13,7 @@ public class UserProfile {
     String email;
     Integer age;
 
-    List<Post> createdPost;
-    List<Post> participated;
-    List<Post> waiting;
-
+    RelatedPost createdPost;
+    RelatedPost participated;
+    RelatedPost waiting;
 }

@@ -2,8 +2,6 @@ package com.example.jwt.api;
 
 import com.example.jwt.dto.AccountContext;
 import com.example.jwt.entity.account.Account;
-import com.example.jwt.entity.account.AccountRole;
-import com.example.jwt.entity.account.Role;
 import com.example.jwt.kafka.producer.AccountProducer;
 import com.example.jwt.repository.AccountRepository.AccountRepository;
 import com.example.jwt.security.service.CustomTokenExtractor;
@@ -21,20 +19,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/")
 public class JwtApiController {
 
     private final CustomTokenExtractor tokenExtractor;
-    private final AccountRegisterService accountRegisterService;
-    private final AccountRepository accountRepository;
     private final TokenUtils tokenUtils;
     private final GetTokenInfo getTokenInfo;
-    private final AccountProducer accountProducer;
 
     @GetMapping(value = "/refresh")
     public ResponseEntity<String> refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -50,39 +42,5 @@ public class JwtApiController {
         } else {
             return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
         }
-    }
-
-    @GetMapping(value = "/user")
-    public ResponseEntity<Account> loadUser(HttpServletRequest request, HttpServletResponse response) {
-
-        try {
-            String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
-            String refreshToken = tokenExtractor.getTokenFromRequest(request, RefreshTokenConstant.AUTH_HEADER).substring(6);
-
-            if(getTokenInfo.isValidToken(refreshToken)) {
-                String username = getTokenInfo.getUserName(accessToken);
-                Account account = accountRepository.findAccountByUsername(username);
-
-                return new ResponseEntity<>(account, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-        }
-    }
-
-
-    @PostMapping(value = "/signup")
-    String signup(@RequestBody Account account) {
-        try {
-            //accountRegisterService.registerNewAccount(account);
-            accountProducer.send("account", account);
-        } catch (Exception e) {
-            if(e instanceof UsernameNotFoundException) {
-                return e.getMessage();
-            }
-        }
-        return "success";
     }
 }

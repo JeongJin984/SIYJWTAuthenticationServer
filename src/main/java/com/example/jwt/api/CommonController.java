@@ -1,5 +1,6 @@
 package com.example.jwt.api;
 
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,6 +13,7 @@ public class CommonController {
     private final Environment env;
 
     @GetMapping("/health_check")
+    @Timed(value = "users.status", longTask = true)
     public String status() {
         return String.format("It's Working in Gateway Service" +
                 //", port(local.server.port)=" + env.getProperty("local.server.port") +

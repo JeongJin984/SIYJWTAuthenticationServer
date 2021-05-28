@@ -2,27 +2,19 @@ spring:
   application:
     name: siy-user-service
 
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/springdata
-#    username: njj
-#    password: pass
-#
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#    database-platform: "org.hibernate.dialect.PostgreSQLDialect"
-#    properties:
-#      hibernate:
-#        format_sql: true
-#        show_sql: true
-#        jdbc:
-#          lob:
-#            non_contextual_creation: true
   rabbitmq:
     host: localhost
     port: 5672
     username: guest
     password: guest
+
+  zipkin:
+    base-url: http://localhost:9411
+    enabled: true
+
+  sleuth:
+    sampler:
+      probability: 1.0
 
 eureka:
   client:
@@ -34,6 +26,8 @@ eureka:
 logging:
   level:
     org.hibernate.type.descriptor.sql: trace
+    com.example.jwt.feign: DEBUG
+
 
 server:
   port: 8093
@@ -42,6 +36,6 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans, httptrace,busrefresh
+        include: refresh, health, beans, httptrace,busrefresh, info, prometheus, metrics
 
 

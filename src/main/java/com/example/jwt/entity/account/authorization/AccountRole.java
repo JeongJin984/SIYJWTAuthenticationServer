@@ -1,5 +1,6 @@
-package com.example.jwt.entity.account;
+package com.example.jwt.entity.account.authorization;
 
+import com.example.jwt.entity.account.Account;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -15,7 +16,6 @@ import javax.persistence.*;
 public class AccountRole {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne

@@ -1,7 +1,6 @@
 package com.example.jwt.security.handler;
 
 import com.example.jwt.dto.AccountContext;
-import com.example.jwt.repository.LogOutUserRepository.LogOutUserRepository;
 import com.example.jwt.security.util.jwt.RefreshToken.RefreshTokenConstant;
 import com.example.jwt.security.util.jwt.accesToken.ResponseToken;
 import com.example.jwt.security.util.jwt.accesToken.TokenConstant;
@@ -24,12 +23,10 @@ import java.io.IOException;
 @Service
 public class CustomLoginSuccessHandler extends SavedRequestAwareAuthenticationSuccessHandler {
 
-    private LogOutUserRepository logOutUserRepository;
     private TokenUtils tokenUtils;
 
     @Autowired
-    public CustomLoginSuccessHandler(LogOutUserRepository logOutUserRepository, TokenUtils tokenUtils) {
-        this.logOutUserRepository = logOutUserRepository;
+    public CustomLoginSuccessHandler(TokenUtils tokenUtils) {
         this.tokenUtils = tokenUtils;
     }
 

@@ -1,5 +1,6 @@
-package com.example.jwt.kafka.dto.user.object;
+package com.example.jwt.kafka.dto;
 
+import com.example.jwt.kafka.dto.Field;
 import lombok.Builder;
 import lombok.Data;
 

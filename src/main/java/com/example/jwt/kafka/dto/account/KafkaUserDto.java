@@ -1,9 +1,8 @@
-package com.example.jwt.kafka.dto.user;
+package com.example.jwt.kafka.dto.account;
 
-import com.example.jwt.kafka.dto.user.object.Payload;
-import com.example.jwt.kafka.dto.user.object.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import com.example.jwt.kafka.dto.Schema;
 
 import java.io.Serializable;
 
@@ -11,5 +10,5 @@ import java.io.Serializable;
 @AllArgsConstructor
 public class KafkaUserDto implements Serializable {
     private Schema schema;
-    private Payload payload;
+    private UserPayload payload;
 }

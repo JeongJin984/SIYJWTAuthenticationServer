@@ -1,16 +1,15 @@
 package com.example.jwt.entity.account;
 
-import com.example.jwt.entity.accountPost.AccountPost;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.example.jwt.entity.account.authorization.AccountRole;
+import com.example.jwt.entity.account.info.Gender;
+import com.example.jwt.entity.account.info.Info;
+import com.example.jwt.entity.account.info.Major;
 import lombok.*;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Min;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "ACCOUNT")
@@ -19,9 +18,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class Account implements UserDetails {
+public class Account {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
     @Column(name = "account_id")
     private Long id;
 
@@ -39,14 +38,13 @@ public class Account implements UserDetails {
     private String email;
 
     @Column
-    private int age;
+    private Integer age;
+
+    @Column
+    private Info qualification;
 
     @OneToMany(mappedBy = "account",fetch = FetchType.LAZY, cascade={CascadeType.ALL})
     List<AccountRole> accountRoles = new ArrayList<>();
-
-    @OneToMany(mappedBy = "account")
-    @JsonIgnore
-    List<AccountPost> accountPosts = new ArrayList<>();
 
     public Account(String username, String password, String email, int age) {
         this.username = username;
@@ -55,15 +53,24 @@ public class Account implements UserDetails {
         this.age = age;
     }
 
-    public Account(String username, String password, String email) {
+    public Account(String username, String password, String email, int age, String gender, String major, Integer grade) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.age = 0;
+        this.age = age;
+        this.qualification = new Info(Major.valueOf(major), Gender.valueOf(gender), grade);
     }
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public void setAccountRoles(List<AccountRole> accountRoles) {
@@ -71,30 +78,5 @@ public class Account implements UserDetails {
         this.accountRoles.stream().forEach(accountRole -> {
             accountRole.setAccount(this);
         });
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 }

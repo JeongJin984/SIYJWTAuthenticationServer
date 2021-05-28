@@ -1,4 +1,4 @@
-package com.example.jwt.kafka.config;
+package com.example.jwt.config;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

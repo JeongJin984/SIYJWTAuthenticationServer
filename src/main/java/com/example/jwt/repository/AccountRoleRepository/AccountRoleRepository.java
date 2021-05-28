@@ -1,8 +1,7 @@
 package com.example.jwt.repository.AccountRoleRepository;
 
-import com.example.jwt.entity.account.AccountRole;
+import com.example.jwt.entity.account.authorization.AccountRole;
 import com.example.jwt.repository.CommonRepository;
-import com.example.jwt.repository.RoleRepository.RoleRepositoryCustom;
 import org.springframework.stereotype.Repository;
 
 @Repository

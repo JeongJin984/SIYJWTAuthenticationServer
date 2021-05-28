@@ -1,4 +1,4 @@
-package com.example.jwt.entity.account;
+package com.example.jwt.entity.account.authorization;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;

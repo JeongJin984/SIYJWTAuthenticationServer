@@ -1,6 +1,6 @@
 package com.example.jwt.security.util.jwt;
 
-import com.example.jwt.entity.account.Role;
+import com.example.jwt.entity.account.authorization.Role;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,7 +8,6 @@ import org.springframework.security.jwt.codec.Codecs;
 import org.springframework.stereotype.Component;
 
 import java.nio.CharBuffer;
-import java.util.Base64;
 
 @Slf4j
 @Component

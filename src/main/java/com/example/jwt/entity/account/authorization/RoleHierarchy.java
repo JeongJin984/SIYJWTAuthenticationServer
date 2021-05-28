@@ -1,11 +1,10 @@
-package com.example.jwt.entity.account;
+package com.example.jwt.entity.account.authorization;
 
 import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Entity

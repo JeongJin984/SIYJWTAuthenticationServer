@@ -1,4 +1,4 @@
-package com.example.jwt.entity.account;
+package com.example.jwt.entity.account.authorization;
 
 import lombok.*;
 

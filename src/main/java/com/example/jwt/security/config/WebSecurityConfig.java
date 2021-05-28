@@ -1,14 +1,11 @@
 package com.example.jwt.security.config;
 
-import com.example.jwt.entity.account.LogOutUser;
-import com.example.jwt.repository.LogOutUserRepository.LogOutUserRepository;
 import com.example.jwt.security.filter.AjaxLoginProcessingFilter;
 import com.example.jwt.security.handler.CustomLoginFailureHandler;
 import com.example.jwt.security.handler.CustomLoginSuccessHandler;
 import com.example.jwt.security.provider.AjaxAuthenticationProvider;
 import com.example.jwt.security.service.CustomTokenExtractor;
 import com.example.jwt.security.service.UserDetailsServiceImpl;
-import com.example.jwt.security.util.jwt.accesToken.TokenConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
@@ -21,21 +18,17 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.CookieClearingLogoutHandler;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 @Configuration
@@ -44,7 +37,6 @@ import java.io.IOException;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserDetailsServiceImpl userDetailsService;
-    private final LogOutUserRepository logOutUserRepository;
     private final CustomLoginSuccessHandler customLoginSuccessHandler;
 
     private CustomTokenExtractor tokenExtractor = new CustomTokenExtractor();

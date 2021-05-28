@@ -1,6 +1,6 @@
 package com.example.jwt.repository.RoleRepository;
 
-import com.example.jwt.entity.account.Role;
+import com.example.jwt.entity.account.authorization.Role;
 import com.example.jwt.repository.CommonRepository;
 import org.springframework.stereotype.Repository;
 

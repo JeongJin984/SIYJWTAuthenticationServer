@@ -1,4 +1,4 @@
-package com.example.jwt.kafka.dto.user.object;
+package com.example.jwt.kafka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
