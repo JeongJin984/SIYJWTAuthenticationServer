@@ -41,30 +41,20 @@ public class UserController {
 
     @GetMapping(value = "/user")
     public ResponseEntity<UserResponse> loadUser(HttpServletRequest request, HttpServletResponse response) {
+        String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
 
-        try {
-            String accessToken = tokenExtractor.getTokenFromRequest(request, TokenConstant.AUTH_HEADER).substring(6);
-            String refreshToken = tokenExtractor.getTokenFromRequest(request, RefreshTokenConstant.AUTH_HEADER).substring(6);
+            String username = getTokenInfo.getUserName(accessToken);
+            Account account = accountRepository.findAccountByUsername(username);
+            UserResponse userResponse = new UserResponse(
+                    account.getUsername(),
+                    account.getEmail(),
+                    account.getAge(),
+                    account.getQualification().getMajor().name(),
+                    account.getQualification().getGender().name(),
+                    account.getQualification().getGrade()
+            );
 
-            if(getTokenInfo.isValidToken(refreshToken)) {
-                String username = getTokenInfo.getUserName(accessToken);
-                Account account = accountRepository.findAccountByUsername(username);
-                UserResponse userResponse = new UserResponse(
-                        account.getUsername(),
-                        account.getEmail(),
-                        account.getAge(),
-                        account.getQualification().getMajor().name(),
-                        account.getQualification().getGender().name(),
-                        account.getQualification().getGrade()
-                );
-
-                return new ResponseEntity<>(userResponse, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(null, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
-        }
+            return new ResponseEntity<>(userResponse, HttpStatus.OK);
     }
 
     @PostMapping(value = "/signup")
@@ -83,8 +73,8 @@ public class UserController {
             account.setId(account_id);
             signUpData.setAccount_id(account_id);
 
-            //accountRegisterService.registerNewAccount(account);
-            accountRegisterService.registerNewAccountByKafka(signUpData);
+            accountRegisterService.registerNewAccount(account);
+            //accountRegisterService.registerNewAccountByKafka(signUpData);
         } catch (Exception e) {
             if(e instanceof UsernameNotFoundException) {
                 return e.getMessage();
