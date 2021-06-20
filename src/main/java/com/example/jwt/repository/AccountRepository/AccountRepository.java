@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface AccountRepository extends CommonRepository<Account, Long>, AccountRepositoryCustom {
     Account findAccountByUsername(String username); // AccountRole is Empty, Password embedded
+    Account deleteAccountByUsername(String username);
 }

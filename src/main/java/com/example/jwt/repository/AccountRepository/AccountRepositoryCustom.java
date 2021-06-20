@@ -4,4 +4,5 @@ import com.example.jwt.entity.account.Account;
 
 public interface AccountRepositoryCustom {
     public Account findByUsername(String username);
+    public void updateAccount(Account account);
 }

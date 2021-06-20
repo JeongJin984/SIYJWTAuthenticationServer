@@ -82,4 +82,17 @@ public class UserController {
         }
         return "success";
     }
+
+    @PostMapping("/update")
+    String update(@RequestBody SignUpUserDto signUpData) {
+        Account account = new Account(
+                signUpData.getUsername(),
+                signUpData.getPassword(),
+                signUpData.getEmail(),
+                signUpData.getAge()
+        );
+        accountRepository.updateAccount(account);
+
+        return "SUCCESS";
+    }
 }
